@@ -1,22 +1,26 @@
+import type { App } from 'vue';
+import type { I18nOptions } from 'vue-i18n';
+
 import { createI18n } from 'vue-i18n';
-import zn from './lang/zh-CN/zh-CN';
-import en from './lang/en-US/en-US';
 
-export const LOCALE_OPTIONS = [
-  { label: '中文', value: 'zh-CN' },
-  { label: 'English', value: 'en-US' },
-];
-const defaultLocale = localStorage.getItem('arco-locale') || 'zh-CN';
 
-const i18n = createI18n({
-  locale: defaultLocale,
-  fallbackLocale: 'en-US',
-  legacy: false,
-  allowComposition: true,
-  messages:{
-    'zh-CN': zn,
-    'en-US': en,
+export let i18n: ReturnType<typeof createI18n>;
+
+
+async function createI18nOptions(): Promise<I18nOptions> {
+
+  return{
+    legacy: false,
+    locale: 'zh-CN',
+    fallbackLocale: 'en-US',
+    messages: {
+      
+    },
   }
-});
+}
 
-export default i18n;
+export async function setupI18n(app: App) {
+  const options = await createI18nOptions();
+  i18n = createI18n(options) as any;
+  app.use(i18n);
+}
